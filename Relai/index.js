@@ -1,14 +1,14 @@
 const websock = require("ws");
 const mqtt = require("mqtt");
 const ws_port = 8002;
-const mqtt_address;
+const mqtt_address= "mqtt://localhost:1883";
 
 const mqtt_client = mqtt.connect(mqtt_address);
 
-client.on("connect", () => {
-    client.subscribe("beaconid", (err) => {
+mqtt_client.on("connect", () => {
+    mqtt_client.subscribe("beaconid", (err) => {
       if (!err) {
-        client.publish("beaconid", "Hello mqtt");
+        mqtt_client.publish("beaconid", "Hello mqtt");
       }
     });
   });
