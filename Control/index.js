@@ -17,8 +17,8 @@ control.get("/", function(request, response){
     websockserver.clients.forEach(function(client) {
         client.send(state.toString());
     });
-    state = !state;
     response.send(state.toString());
+    state = !state;
 });
 control.listen(http_port, function () {
     console.log("Started application on port %d", http_port);

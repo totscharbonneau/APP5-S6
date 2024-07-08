@@ -15,6 +15,8 @@
 #include <BLEEddystoneTLM.h>
 #include <BLEBeacon.h>
 #include <WiFi.h>
+#include <ArduinoWebsockets.h>
+
 // #include <AsyncTCP.h>
 // #include <ESPAsyncWebServer.h>
 
@@ -23,10 +25,26 @@
 const char *ssid = "Pixeltots";
 const char *password= "dlapoudreendroit";
 
+const char* websockets_server = "ws://192.168.66.102:8001"; //server adress and port
+
+using namespace websockets;
+
 
 
 int scanTime = 2;  //In seconds
 BLEScan *pBLEScan;
+
+void onMessageCallback(WebsocketsMessage message) {
+    Serial.print("Got Message: ");
+    Serial.println(message.data());
+    if(message.data().equals("true")){
+      digitalWrite(18, HIGH);
+    }
+    else if(message.data().equals("false")){
+      digitalWrite(18, LOW);
+    }
+}
+
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 
@@ -51,12 +69,17 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
     }
   }
 };
-
+WebsocketsClient client;
 void setup() {
   Serial.begin(115200);
   Serial.println("Scanning...");
   pinMode(18, OUTPUT);
   wifiConnect();
+
+  client.onMessage(onMessageCallback);
+  client.connect(websockets_server);
+  client.send("Hi Server!");
+  client.ping();
 
   BLEDevice::init("");
   pBLEScan = BLEDevice::getScan();  //create new scan
@@ -67,26 +90,27 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  // digitalWrite(18, HIGH);
+
+  // 
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
-  Serial.print("Devices found: ");
-  Serial.println(foundDevices->getCount());
-  Serial.println("Scan done!");
+  // Serial.print("Devices found: ");
+  // Serial.println(foundDevices->getCount());
+  // Serial.println("Scan done!");
   pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
 
-  delay(2000);
+  // delay(2000);
   // digitalWrite(18, LOW);
   // delay(2000);
+  client.poll();
 }
 
 void wifiConnect(){
     WiFi.begin(ssid, password);
     Serial.println("\nConnecting");
 
-    while(WiFi.status() != WL_CONNECTED){
+    for(int i = 0; i < 10 && WiFi.status() != WL_CONNECTED; i++) {
         Serial.print(".");
-        delay(100);
+        delay(1000);
     }
 
     Serial.println("\nConnected to the WiFi network");
