@@ -15,9 +15,10 @@ websockserver.on('connection', function (ws) {
 var control = express()
 control.get("/", function(request, response){
     websockserver.clients.forEach(function(client) {
-        client.send(state);
+        client.send(state.toString());
     });
-    state != state;
+    state = !state;
+    response.send(state.toString());
 });
 control.listen(http_port, function () {
     console.log("Started application on port %d", http_port);
