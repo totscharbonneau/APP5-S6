@@ -10,6 +10,7 @@ websockserver.on('connection', function (ws) {
     ws.on('message', function (data) {
         console.log('received: %s', data);
     });
+    ws.send(state);
 });
 
 var control = express()
