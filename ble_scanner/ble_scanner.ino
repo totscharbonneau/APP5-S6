@@ -6,6 +6,7 @@
 */
 
 #include <Arduino.h>
+
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
@@ -13,8 +14,18 @@
 #include <BLEEddystoneURL.h>
 #include <BLEEddystoneTLM.h>
 #include <BLEBeacon.h>
+#include <WiFi.h>
+// #include <AsyncTCP.h>
+// #include <ESPAsyncWebServer.h>
 
-int scanTime = 5;  //In seconds
+
+
+const char *ssid = "Pixeltots";
+const char *password= "dlapoudreendroit";
+
+
+
+int scanTime = 2;  //In seconds
 BLEScan *pBLEScan;
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
@@ -44,6 +55,8 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 void setup() {
   Serial.begin(115200);
   Serial.println("Scanning...");
+  pinMode(18, OUTPUT);
+  wifiConnect();
 
   BLEDevice::init("");
   pBLEScan = BLEDevice::getScan();  //create new scan
@@ -55,10 +68,28 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  // digitalWrite(18, HIGH);
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
   Serial.print("Devices found: ");
   Serial.println(foundDevices->getCount());
   Serial.println("Scan done!");
   pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
+
   delay(2000);
+  // digitalWrite(18, LOW);
+  // delay(2000);
+}
+
+void wifiConnect(){
+    WiFi.begin(ssid, password);
+    Serial.println("\nConnecting");
+
+    while(WiFi.status() != WL_CONNECTED){
+        Serial.print(".");
+        delay(100);
+    }
+
+    Serial.println("\nConnected to the WiFi network");
+    Serial.print("Local ESP32 IP: ");
+    Serial.println(WiFi.localIP());
 }
