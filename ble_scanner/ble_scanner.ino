@@ -25,7 +25,9 @@
 const char *ssid = "Pixeltots";
 const char *password= "dlapoudreendroit";
 
-const char* websockets_server = "ws://192.168.66.102:8001"; //server adress and port
+const char* websockets_server_light = "ws://192.168.66.102:8001";
+const char* websockets_serve_data = "ws://192.168.66.102:8002";
+
 
 using namespace websockets;
 
@@ -65,21 +67,28 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
           "ID: %04X Major: %d Minor: %d UUID: %s Power: %d\n", oBeacon.getManufacturerId(), ENDIAN_CHANGE_U16(oBeacon.getMajor()),
           ENDIAN_CHANGE_U16(oBeacon.getMinor()), oBeacon.getProximityUUID().toString().c_str(), oBeacon.getSignalPower()
         );
+        client_light.send(oBeacon.getProximityUUID().toString().c_str());
       } 
     }
   }
 };
-WebsocketsClient client;
+
+WebsocketsClient client_light;
+WebsocketsClient client_data;
+
 void setup() {
   Serial.begin(115200);
   Serial.println("Scanning...");
   pinMode(18, OUTPUT);
   wifiConnect();
 
-  client.onMessage(onMessageCallback);
-  client.connect(websockets_server);
-  client.send("Hi Server!");
-  client.ping();
+  client_light.onMessage(onMessageCallback);
+  client_light.connect(websockets_server_light);
+  client_light.send("Hi Server!");
+  client_light.ping();
+
+  client_data.connect(websockets_server_data);
+  client_data.ping();
 
   BLEDevice::init("");
   pBLEScan = BLEDevice::getScan();  //create new scan
@@ -135,7 +144,8 @@ void TaskBLE(void *pvParameters) {
 
 void TaskLight(void *pvParameters) {
   while (true) {
-    client.poll();
+    client_light.poll();
+    client_data.poll();
   }
 }
 
