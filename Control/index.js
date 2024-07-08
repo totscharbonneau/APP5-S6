@@ -1,5 +1,6 @@
 const express = require("express");
 const websock = require("ws");
+const cors = require('cors')
 const ws_port = 8001;
 const http_port = 8000;
 var state = true;
@@ -13,6 +14,7 @@ websockserver.on('connection', function (ws) {
 });
 
 var control = express()
+control.use(cors());
 control.get("/", function(request, response){
     websockserver.clients.forEach(function(client) {
         client.send(state.toString());
