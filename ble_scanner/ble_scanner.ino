@@ -87,21 +87,25 @@ void setup() {
   pBLEScan->setActiveScan(true);  //active scan uses more power, but get results faster
   pBLEScan->setInterval(100);
   pBLEScan->setWindow(99);  // less or equal setInterval value
+
+
+  xTaskCreate(TaskBLE,"ble",10000,NULL,1,NULL);
+  xTaskCreate(TaskLight,"ble",10000,NULL,2,NULL);
 }
 
 void loop() {
 
   // 
-  BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
+  // BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
   // Serial.print("Devices found: ");
   // Serial.println(foundDevices->getCount());
   // Serial.println("Scan done!");
-  pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
+  // pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
 
   // delay(2000);
   // digitalWrite(18, LOW);
   // delay(2000);
-  client.poll();
+  // client.poll();
 }
 
 void wifiConnect(){
@@ -117,3 +121,21 @@ void wifiConnect(){
     Serial.print("Local ESP32 IP: ");
     Serial.println(WiFi.localIP());
 }
+
+void TaskBLE(void *pvParameters) {
+  while (true) {
+    BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
+  Serial.print("Devices found: ");
+  Serial.println(foundDevices->getCount());
+  Serial.println("Scan done!");
+  pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
+  delay(2000);
+  }
+}
+
+void TaskLight(void *pvParameters) {
+  while (true) {
+    client.poll();
+  }
+}
+
