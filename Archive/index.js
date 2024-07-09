@@ -12,7 +12,7 @@ mqtt_client.on("connect", function () {
 });
 mqtt_client.on("message", function (topic, message) {
     var date = new Date();
-    var line = '"'.concat(date.getTime().toLocaleString("en-US"), '","', message.toString(), '"\n')
+    var line = '"'.concat(date.getTime().toLocaleString("en-US", {dateStyle: "long", timeStyle: "long"}), '","', message.toString(), '"\n')
     fs.appendFileSync(database_filename, line);
 })
 
