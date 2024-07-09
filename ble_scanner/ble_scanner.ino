@@ -26,7 +26,7 @@ const char *ssid = "Pixeltots";
 const char *password= "dlapoudreendroit";
 
 const char* websockets_server_light = "ws://192.168.66.102:8001";
-const char* websockets_serve_data = "ws://192.168.66.102:8002";
+const char* websockets_server_data = "ws://192.168.66.102:8002";
 
 
 using namespace websockets;
@@ -35,6 +35,9 @@ using namespace websockets;
 
 int scanTime = 2;  //In seconds
 BLEScan *pBLEScan;
+
+WebsocketsClient client_light;
+WebsocketsClient client_data;
 
 void onMessageCallback(WebsocketsMessage message) {
     Serial.print("Got Message: ");
@@ -67,14 +70,13 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
           "ID: %04X Major: %d Minor: %d UUID: %s Power: %d\n", oBeacon.getManufacturerId(), ENDIAN_CHANGE_U16(oBeacon.getMajor()),
           ENDIAN_CHANGE_U16(oBeacon.getMinor()), oBeacon.getProximityUUID().toString().c_str(), oBeacon.getSignalPower()
         );
-        client_light.send(oBeacon.getProximityUUID().toString().c_str());
+        client_data.send(oBeacon.getProximityUUID().toString().c_str());
       } 
     }
   }
 };
 
-WebsocketsClient client_light;
-WebsocketsClient client_data;
+
 
 void setup() {
   Serial.begin(115200);
