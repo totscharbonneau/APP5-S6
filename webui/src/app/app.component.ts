@@ -19,9 +19,10 @@ function httpGet(theUrl: string)
 })
 export class AppComponent {
   title = 'webui';
+  buttonText: string = 'true';
 
   onButtonClick() {
     console.log('Button clicked!');
-    httpGet("http://localhost:8000");
+    this.buttonText = httpGet("http://localhost:8000");
   }
 }
