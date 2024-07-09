@@ -26,7 +26,7 @@ const char *ssid = "Pixeltots";
 const char *password= "dlapoudreendroit";
 
 const char* websockets_server_light = "ws://192.168.66.102:8001";
-const char* websockets_serve_data = "ws://192.168.66.102:8002";
+const char* websockets_server_data = "ws://192.168.66.102:8002";
 
 
 using namespace websockets;
