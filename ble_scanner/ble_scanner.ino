@@ -36,6 +36,9 @@ using namespace websockets;
 int scanTime = 2;  //In seconds
 BLEScan *pBLEScan;
 
+WebsocketsClient client_light;
+WebsocketsClient client_data;
+
 void onMessageCallback(WebsocketsMessage message) {
     Serial.print("Got Message: ");
     Serial.println(message.data());
@@ -67,14 +70,13 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
           "ID: %04X Major: %d Minor: %d UUID: %s Power: %d\n", oBeacon.getManufacturerId(), ENDIAN_CHANGE_U16(oBeacon.getMajor()),
           ENDIAN_CHANGE_U16(oBeacon.getMinor()), oBeacon.getProximityUUID().toString().c_str(), oBeacon.getSignalPower()
         );
-        client_light.send(oBeacon.getProximityUUID().toString().c_str());
+        client_data.send(oBeacon.getProximityUUID().toString().c_str());
       } 
     }
   }
 };
 
-WebsocketsClient client_light;
-WebsocketsClient client_data;
+
 
 void setup() {
   Serial.begin(115200);
