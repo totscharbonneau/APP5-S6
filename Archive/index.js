@@ -3,7 +3,7 @@ const fs = require("fs");
 const express = require("express");
 const cors = require('cors')
 const mqtt_address = "mqtt://localhost:1883";
-const database_filename = "database.csv";
+const database_filename = "./csv-viewer/data.csv";
 const mqtt_client = mqtt.connect(mqtt_address);
 const http_port = 8003;
 

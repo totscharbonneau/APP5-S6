@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CSV Viewer</title>
+</head>
+<body>
+  <h1>CSV Data</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Timestamp</th>
+        <th>UUID</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% data.forEach(row => { %>
+        <tr>
+          <td><%= row.timestamp %></td>
+          <td><%= row.uuid %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>
