@@ -9,5 +9,4 @@ mqtt_client.on("connect", function () {
 });
 mqtt_client.on("message", function (topic, message) {
     fs.appendFileSync(database_filename, message.toString());
-    mqtt_client.end();
 })
