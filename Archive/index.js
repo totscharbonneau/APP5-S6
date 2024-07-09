@@ -10,7 +10,9 @@ mqtt_client.on("connect", function () {
     mqtt_client.subscribe("beaconid");
 });
 mqtt_client.on("message", function (topic, message) {
-    fs.appendFileSync(database_filename, message.toString());
+    var date = new Date();
+    var line = '"'.concat(date.getDate().toString(), '","', message.toString(), '"\n')
+    fs.appendFileSync(database_filename, line);
 })
 
 var archive = express()
